@@ -2,19 +2,19 @@
 
 ## Variables
 
-| Name             | Default          | Description                                                 |
-|:-----------------|:-----------------|:------------------------------------------------------------|
-| cluster_name     | staging          | The cluster name used within Harvester (needs to be unique) |
-| namespace        | harvester-public | The namespace resources get deployed to within Harvester    |
-| vlan_id          | 2                | The VLAN ID used to connect the VMs                         |
-| efi              | true             | Enable EFI on the nodes                                     |
-| ssh_user         | rancher          | User for the SSH Login                                      |
-| ssh_keys         | None             | e.g. { username = "ssh-rsa AAAAB3Nz[...]" }                 |
-| ssh_key_location | ~/.ssh/id_rsa    | SSH Key to connect to the hosts                             |
-| rancher2         | see below        | Configuration for the rancher management server             |
-| cluster          | see below        | Configuration for created k3s cluster                       |
-| server_vms       | see below        | Configuration for the server nodes                          |
-| agent_vms        | see below        | Configuration for the agent nodes                           |
+| Name             | Default                                                                                   | Description                                                 |
+|:-----------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------|
+| cluster_name     | staging                                                                                   | The cluster name used within Harvester (needs to be unique) |
+| namespace        | harvester-public                                                                          | The namespace resources get deployed to within Harvester    |
+| vlan_id          | 2                                                                                         | The VLAN ID used to connect the VMs                         |
+| efi              | true                                                                                      | Enable EFI on the nodes                                     |
+| ssh_user         | rancher                                                                                   | User for the SSH Login                                      |
+| ssh_keys         | None                                                                                      | e.g. { username = "ssh-rsa AAAAB3Nz[...]" }                 |
+| ssh_key_location | ~/.ssh/id_rsa                                                                             | SSH Key to connect to the hosts                             |
+| rancher2         | [see below](https://github.com/dgiebert/harvester-k3s-terraform#rancher2)                 | Configuration for the rancher management server             |
+| cluster          | [see below](https://github.com/dgiebert/harvester-k3s-terraform#cluster)                  | Configuration for created k3s cluster                       |
+| server_vms       | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the server nodes                          |
+| agent_vms        | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the agent nodes                           |
 
 #### rancher2
 
