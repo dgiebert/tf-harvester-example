@@ -67,6 +67,12 @@ resource "harvester_virtualmachine" "servers" {
     user_data    = local.cloud_init.user_data
     network_data = local.cloud_init.network_data
   }
+  # This is to ignore volumes added using the CSI Provider
+  lifecycle {
+    ignore_changes = [
+      disk,
+    ]
+  }
 }
 
 # Harvester VMs created to serve as agent nodes (configured via var.agent_vms)
