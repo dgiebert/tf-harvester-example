@@ -144,7 +144,7 @@ resource "ssh_resource" "init-servers" {
     "sudo chmod 755 /etc/sysctl.d/",
     "sudo chown root:root /etc/rancher/k3s/config.yaml",
     "sudo chown root:root /etc/sysctl.d/90-kubelet.conf",
-    "${local.registration_url} ${var.rancher2.server_args}"
+    "${local.registration_url} ${var.cluster.server_args}"
   ]
 }
 

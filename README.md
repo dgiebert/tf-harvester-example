@@ -61,7 +61,10 @@ The `agent_vms` are not deployed per default (number = 0)
 3. Create the server using a target: `terraform apply -target=harvester_virtualmachine.agents`
 4. Create the Cluster with `terraform apply`
 
-### Module Usage
+### Module
+
+1. Create the server using a target: `terraform apply -target=harvester_virtualmachine.agents`
+2. Create the Cluster with `terraform apply`
 
 ```
 module "harvester-k3s" {
