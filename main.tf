@@ -105,7 +105,7 @@ resource "harvester_virtualmachine" "agents" {
 # Create a K3S Cluster
 resource "rancher2_cluster_v2" "default" {
   name                  = var.cluster.name
-  kubernetes_version    = var.rancher2.k3s_version
+  kubernetes_version    = var.cluster.k3s_version
   enable_network_policy = true # Experimental
 }
 

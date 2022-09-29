@@ -18,11 +18,11 @@
 
 #### rancher2
 
-| Name       | Default | Description                           |
-|:-----------|:--------|:--------------------------------------|
-| access_key | ""      | Create a access key in the Rancher UI |
-| secret_key | ""      | Create a secret key in the Rancher UI |
-| url        | ""      | Rancher HTTPS endpoint                |
+| Name       | Default | Description                                                                                                                  |
+|:-----------|:--------|:-----------------------------------------------------------------------------------------------------------------------------|
+| access_key | ""      | Create a access key in the Rancher UI [docs](https://docs.ranchermanager.rancher.io/reference-guides/user-settings/api-keys) |
+| secret_key | ""      | Create a secret key in the Rancher UI [docs](https://docs.ranchermanager.rancher.io/reference-guides/user-settings/api-keys) |
+| url        | ""      | Rancher HTTPS endpoint                                                                                                       |
 
 #### cluster
 
