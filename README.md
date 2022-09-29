@@ -50,13 +50,13 @@ The `agent_vms` are not deployed per default (number = 0)
 2. Create a file called `terraform.tfvars` and define the needed variables
     ```
     rancher2 = {
-    access_key   = "<ACCESS_KEY>"
-    secret_key   = "<SECRET_KEY>"
-    url          = "<RANCHER_URL>"
+        access_key   = "<ACCESS_KEY>"
+        secret_key   = "<SECRET_KEY>"
+        url          = "<RANCHER_URL>"
     }
 
     ssh_keys = {
-    user = "ssh-rsa AAAAB3Nz[...]"
+        user = "ssh-rsa AAAAB3Nz[...]"
     }
     ```
 3. Create the server using a target: `terraform apply -target=harvester_virtualmachine.agents`
