@@ -23,7 +23,7 @@ provider "rancher2" {
   secret_key = var.rancher2.secret_key
 }
 provider "harvester" {
-  kubeconfig = "${path.root}/harvester.kubeconfig"
+  kubeconfig = var.harvester_kube_config
 }
 provider "ssh" {
   debug_log = "${path.root}/ssh.log"

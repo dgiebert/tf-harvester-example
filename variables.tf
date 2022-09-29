@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "harvester-public"
 }
 
+variable "harvester_kube_config" {
+  description = "The location to check for the kubeconfig to connect to Harverster"
+  type        = string
+  default     = "${path.root}/harvester.kubeconfig"
+}
+
 variable "vlan_id" {
   description = "The VLAN ID used to connect the VMs"
   type        = number
