@@ -7,7 +7,7 @@ variable "namespace" {
 variable "harvester_kube_config" {
   description = "The location to check for the kubeconfig to connect to Harverster"
   type        = string
-  default     = "${path.root}/harvester.kubeconfig"
+  default     = ""
 }
 
 variable "vlan_id" {

@@ -19,4 +19,5 @@ locals {
       EOF
   }
   registration_url = "curl -fL ${var.rancher2.url}/system-agent-install.sh | sudo  sh -s - --server ${var.rancher2.url} --token ${rancher2_cluster_v2.default.cluster_registration_token[0].token}"
+  harvester_kube_config = var.harvester_kube_config != "" ? var.harvester_kube_config : "${path.root}/harvester.kubeconfig"
 }
