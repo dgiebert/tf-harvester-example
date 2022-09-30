@@ -36,12 +36,13 @@
 
 #### server_vms and agent_vms
 
-| Name      | Default | Description                       |
-|:----------|:--------|:----------------------------------|
-| number    | 3       | The number of nodes to be created |
-| cpu       | 2       | The number of CPUs                |
-| memory    | 4Gi     | The amount of memory              |
-| disk_size | 20Gi    | The disk size                     |
+| Name        | Default | Description                             |
+|:------------|:--------|:----------------------------------------|
+| number      | 3       | The number of nodes to be created       |
+| cpu         | 4       | The number of CPUs                      |
+| memory      | 16Gi    | The amount of memory                    |
+| disk_size   | 20Gi    | The disk size                           |
+| auto_delete | true    | Delete the root partition automatically |
 
 The `agent_vms` are not deployed per default (number = 0)
 
@@ -53,7 +54,7 @@ The `agent_vms` are not deployed per default (number = 0)
 
 ```
 module "harvester-k3s" {
-  source = "git::github.com/dgiebert/harvester-k3s-terraform?ref=v0.0.1"
+  source = "git::github.com/dgiebert/harvester-k3s-terraform?ref=v0.0.4"
 
   rancher2 = {
     access_key   = "<ACCESS_KEY>"

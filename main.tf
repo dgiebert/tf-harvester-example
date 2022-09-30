@@ -10,9 +10,9 @@ resource "harvester_image" "opensuse-leap-15_4" {
 
 # VLAN Network
 resource "harvester_network" "vlan" {
-  name        = "vlan-${var.cluster.name}-${var.vlan_id}"
+  name        = "vlan-${local.cluster.name}-${var.vlan_id}"
   namespace   = var.namespace
-  description = "VLAN used for the cluster ${var.cluster.name} with ID ${var.vlan_id}"
+  description = "VLAN used for the cluster ${local.cluster.name} with ID ${var.vlan_id}"
 
   vlan_id = var.vlan_id
 
@@ -38,15 +38,15 @@ resource "harvester_ssh_key" "keys" {
 # Harvester VMs created to serve as server nodes (configured via var.server_vms)
 resource "harvester_virtualmachine" "servers" {
   count       = local.server_vms.number
-  name        = "${var.cluster.name}-server-${count.index}"
-  description = "This server node belongs to the cluster ${var.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
+  name        = "${local.cluster.name}-server-${count.index}"
+  description = "This server node belongs to the cluster ${local.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
   namespace   = var.namespace
   cpu         = local.server_vms.cpu
   memory      = local.server_vms.memory
   efi         = var.efi
 
   tags = {
-    cluster = var.cluster.name
+    cluster = local.cluster.name
     image   = harvester_image.opensuse-leap-15_4.name
     role    = "server"
   }
@@ -60,7 +60,7 @@ resource "harvester_virtualmachine" "servers" {
     name        = "root"
     size        = local.server_vms.disk_size
     image       = harvester_image.opensuse-leap-15_4.id
-    auto_delete = true
+    auto_delete = local.server_vms.auto_delete
   }
 
   cloudinit {
@@ -78,15 +78,15 @@ resource "harvester_virtualmachine" "servers" {
 # Harvester VMs created to serve as agent nodes (configured via var.agent_vms)
 resource "harvester_virtualmachine" "agents" {
   count       = local.agent_vms.number
-  name        = "${var.cluster.name}-agent-${count.index}"
-  description = "This server node belongs to the cluster ${var.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
+  name        = "${local.cluster.name}-agent-${count.index}"
+  description = "This server node belongs to the cluster ${local.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
   namespace   = var.namespace
   cpu         = local.agent_vms.cpu
   memory      = local.agent_vms.memory
   efi         = var.efi
 
   tags = {
-    cluster = var.cluster.name
+    cluster = local.cluster.name
     image   = harvester_image.opensuse-leap-15_4.name
     role    = "agent"
   }
@@ -100,6 +100,7 @@ resource "harvester_virtualmachine" "agents" {
     name  = "root"
     size  = local.agent_vms.disk_size
     image = harvester_image.opensuse-leap-15_4.id
+    auto_delete = local.agent_vms.auto_delete
   }
 
   cloudinit {
@@ -115,8 +116,8 @@ resource "harvester_virtualmachine" "agents" {
 
 # Create a K3S Cluster
 resource "rancher2_cluster_v2" "default" {
-  name                  = var.cluster.name
-  kubernetes_version    = var.cluster.k3s_version
+  name                  = local.cluster.name
+  kubernetes_version    = local.cluster.k3s_version
   enable_network_policy = true # Experimental
 }
 
@@ -149,7 +150,7 @@ resource "ssh_resource" "init-servers" {
     "sudo chmod 755 /etc/sysctl.d/",
     "sudo chown root:root /etc/rancher/k3s/config.yaml",
     "sudo chown root:root /etc/sysctl.d/90-kubelet.conf",
-    "${local.registration_url} ${var.cluster.server_args}"
+    "${local.registration_url} ${local.cluster.server_args}"
   ]
 }
 
@@ -174,6 +175,6 @@ resource "ssh_resource" "init-agents" {
     "sudo sysctl -p /etc/sysctl.d/90-kubelet.conf",
     "sudo chmod 755 /etc/sysctl.d/",
     "sudo chown root:root /etc/sysctl.d/90-kubelet.conf",
-    "${local.registration_url} ${var.cluster.agent_args}"
+    "${local.registration_url} ${local.cluster.agent_args}"
   ]
 }

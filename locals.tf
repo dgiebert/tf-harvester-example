@@ -20,16 +20,27 @@ locals {
   }
   registration_url      = "curl -fL ${var.rancher2.url}/system-agent-install.sh | sudo  sh -s - --server ${var.rancher2.url} --token ${rancher2_cluster_v2.default.cluster_registration_token[0].token}"
   harvester_kube_config = var.harvester_kube_config != "" ? var.harvester_kube_config : "${path.root}/harvester.kubeconfig"
+
   server_vms = {
-    number    = coalesce(var.server_vms.number, 3)
-    cpu       = coalesce(var.server_vms.cpu, 2)
-    memory    = coalesce(var.server_vms.memory, "4Gi")
-    disk_size = coalesce(var.server_vms.disk_size, "20Gi")
+    number      = coalesce(var.server_vms.number, 3)
+    cpu         = coalesce(var.server_vms.cpu, 4)
+    memory      = coalesce(var.server_vms.memory, "16Gi")
+    disk_size   = coalesce(var.server_vms.disk_size, "20Gi")
+    auto_delete = coalesce(var.agent_vms.auto_delete, true)
   }
+
   agent_vms = {
-    number    = coalesce(var.agent_vms.number, 0)
-    cpu       = coalesce(var.agent_vms.cpu, 2)
-    memory    = coalesce(var.agent_vms.memory, "4Gi")
-    disk_size = coalesce(var.agent_vms.disk_size, "20Gi")
+    number      = coalesce(var.agent_vms.number, 0)
+    cpu         = coalesce(var.agent_vms.cpu, 4)
+    memory      = coalesce(var.agent_vms.memory, "16Gi")
+    disk_size   = coalesce(var.agent_vms.disk_size, "20Gi")
+    auto_delete = coalesce(var.agent_vms.auto_delete, true)
+  }
+
+  cluster = {
+    name        = coalesce(var.cluster.name, "staging")
+    k3s_version = coalesce(var.cluster.k3s_version, "v1.24.4+k3s1")
+    server_args = coalesce(var.cluster.server_args, "--etcd --controlplane --worker --label 'cattle.io/os=linux'")
+    agent_args  = coalesce(var.cluster.agent_args, "--worker --label 'cattle.io/os=linux'")
   }
 }

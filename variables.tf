@@ -29,16 +29,18 @@ variable "vlan_id" {
 variable "server_vms" {
   description = "Configuration for the server nodes "
   type = object({
-    number    = optional(number)
-    cpu       = optional(number)
-    memory    = optional(string)
-    disk_size = optional(string)
+    number      = optional(number)
+    cpu         = optional(number)
+    memory      = optional(string)
+    disk_size   = optional(string)
+    auto_delete = optional(bool)
   })
   default = {
     number    = 3
-    cpu       = 2
-    memory    = "4Gi"
+    cpu       = 4
+    memory    = "16Gi"
     disk_size = "20Gi"
+    auto_delete = true
   }
   validation {
     condition     = coalesce(var.server_vms.number, 3) > 0
@@ -65,16 +67,18 @@ variable "server_vms" {
 variable "agent_vms" {
   description = "Configuration for the agent nodes "
   type = object({
-    number    = optional(number)
-    cpu       = optional(number)
-    memory    = optional(string)
-    disk_size = optional(string)
+    number      = optional(number)
+    cpu         = optional(number)
+    memory      = optional(string)
+    disk_size   = optional(string)
+    auto_delete = optional(bool)
   })
   default = {
     number    = 0
     cpu       = 2
     memory    = "4Gi"
     disk_size = "20Gi"
+    auto_delete = true
   }
   validation {
     condition     = coalesce(var.agent_vms.cpu, 2) >= 2
