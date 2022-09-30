@@ -49,7 +49,8 @@ The `agent_vms` are not deployed per default (number = 0)
 ## Usage
 
 1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
-2. Create the server using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.agents`
+2. Create the server using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.servers`
+2. Create the agents using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.agents`
 3. Create the Cluster with `terraform apply`
 
 ```
