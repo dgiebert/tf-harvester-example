@@ -41,11 +41,11 @@ variable "server_vms" {
     disk_size = "20Gi"
   }
   validation {
-    condition     = var.server_vms.number == null || var.server_vms.number > 0
+    condition     = coalesce(var.agent_vms.cpu, 2) > 0
     error_message = "Cluster must have at least one node"
   }
   validation {
-    condition     = var.server_vms.number == null || var.server_vms.number % 2 == 1
+    condition     = coalesce(var.agent_vms.cpu, 2) % 2 == 1
     error_message = "Cluster must have an uneven number of server nodes"
   }
   validation {
@@ -77,7 +77,7 @@ variable "agent_vms" {
     disk_size = "20Gi"
   }
   validation {
-    condition     = var.agent_vms.cpu == null || var.agent_vms.cpu >= 2
+    condition     = coalesce(var.agent_vms.cpu, 2) >= 2
     error_message = "Cluster must have at least two cores"
   }
   validation {
