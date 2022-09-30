@@ -28,12 +28,12 @@ variable "vlan_id" {
 
 variable "server_vms" {
   description = "Configuration for the server nodes "
-  type = map(object({
+  type = object({
     number    = optional(number)
     cpu       = optional(number)
     memory    = optional(string)
     disk_size = optional(string)
-  }))
+  })
   default = {
     number    = 3
     cpu       = 2
@@ -64,12 +64,12 @@ variable "server_vms" {
 
 variable "agent_vms" {
   description = "Configuration for the agent nodes "
-  type = map(object({
+  type = object({
     number    = optional(number)
     cpu       = optional(number)
     memory    = optional(string)
     disk_size = optional(string)
-  }))
+  })
   default = {
     number    = 0
     cpu       = 2
