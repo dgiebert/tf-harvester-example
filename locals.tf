@@ -27,7 +27,7 @@ locals {
     disk_size = coalesce(var.server_vms.disk_size, "20Gi")
   }
   agent_vms = {
-    number    = coalesce(var.agent_vms.number, 3)
+    number    = coalesce(var.agent_vms.number, 0)
     cpu       = coalesce(var.agent_vms.cpu, 2)
     memory    = coalesce(var.agent_vms.memory, "4Gi")
     disk_size = coalesce(var.agent_vms.disk_size, "20Gi")

@@ -58,7 +58,7 @@ resource "harvester_virtualmachine" "servers" {
 
   disk {
     name        = "root"
-    size        = var.server_vms.disk_size
+    size        = local.server_vms.disk_size
     image       = harvester_image.opensuse-leap-15_4.id
     auto_delete = true
   }
@@ -98,7 +98,7 @@ resource "harvester_virtualmachine" "agents" {
 
   disk {
     name  = "root"
-    size  = var.agent_vms.disk_size
+    size  = local.agent_vms.disk_size
     image = harvester_image.opensuse-leap-15_4.id
   }
 
