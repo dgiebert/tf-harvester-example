@@ -28,7 +28,12 @@ variable "vlan_id" {
 
 variable "server_vms" {
   description = "Configuration for the server nodes "
-  type        = map(any)
+  type = map(object({
+    number    = optional(number)
+    cpu       = optional(number)
+    memory    = optional(string)
+    disk_size = optional(string)
+  }))
   default = {
     number    = 3
     cpu       = 2
@@ -59,7 +64,12 @@ variable "server_vms" {
 
 variable "agent_vms" {
   description = "Configuration for the agent nodes "
-  type        = map(any)
+  type = map(object({
+    number    = optional(number)
+    cpu       = optional(number)
+    memory    = optional(string)
+    disk_size = optional(string)
+  }))
   default = {
     number    = 0
     cpu       = 2
@@ -95,7 +105,7 @@ variable "ssh_user" {
 variable "ssh_keys" {
   description = "The SSH keys to connect to the VMs"
   type        = map(any)
-  default = { }
+  default     = {}
 }
 variable "ssh_key_location" {
   description = "The SSH keys to connect to the VMs"
@@ -107,9 +117,9 @@ variable "rancher2" {
   description = "User for SSH Login"
   type        = map(string)
   default = {
-    access_key   = ""
-    secret_key   = ""
-    url          = ""
+    access_key = ""
+    secret_key = ""
+    url        = ""
   }
   validation {
     condition     = length(var.rancher2.access_key) > 0
@@ -129,9 +139,9 @@ variable "cluster" {
   description = "User for SSH Login"
   type        = map(string)
   default = {
-    name = "staging"
-    k3s_version  = "v1.24.4+k3s1"
-    server_args  = "--etcd --controlplane --worker --label 'cattle.io/os=linux'"
+    name        = "staging"
+    k3s_version = "v1.24.4+k3s1"
+    server_args = "--etcd --controlplane --worker --label 'cattle.io/os=linux'"
     agent_args  = "--worker --label 'cattle.io/os=linux'"
   }
 }
