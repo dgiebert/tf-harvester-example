@@ -41,11 +41,11 @@ variable "server_vms" {
     disk_size = "20Gi"
   }
   validation {
-    condition     = coalesce(var.agent_vms.cpu, 2) > 0
+    condition     = coalesce(var.server_vms.cpu, 2) > 0
     error_message = "Cluster must have at least one node"
   }
   validation {
-    condition     = coalesce(var.agent_vms.cpu, 2) % 2 == 1
+    condition     = coalesce(var.server_vms.cpu, 2) % 2 == 1
     error_message = "Cluster must have an uneven number of server nodes"
   }
   validation {
