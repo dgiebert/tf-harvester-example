@@ -1,4 +1,2 @@
 secrets-encryption: "true"
 protect-kernel-defaults: "true"
-kube-apiserver-arg:
-- "enable-admission-plugins=NodeRestriction,PodSecurityPolicy,ServiceAccount"

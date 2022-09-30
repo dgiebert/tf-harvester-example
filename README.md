@@ -48,24 +48,6 @@ The `agent_vms` are not deployed per default (number = 0)
 ## Usage
 
 1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
-2. Create a file called `terraform.tfvars` and define the needed variables
-    ```
-    rancher2 = {
-        access_key   = "<ACCESS_KEY>"
-        secret_key   = "<SECRET_KEY>"
-        url          = "<RANCHER_URL>"
-    }
-
-    ssh_keys = {
-        user = "ssh-rsa AAAAB3Nz[...]"
-    }
-    ```
-3. Create the server using a target: `terraform apply -target=harvester_virtualmachine.agents`
-4. Create the Cluster with `terraform apply`
-
-### Module
-
-1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
 2. Create the server using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.agents`
 3. Create the Cluster with `terraform apply`
 

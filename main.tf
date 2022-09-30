@@ -136,11 +136,11 @@ resource "ssh_resource" "init-servers" {
 
   file {
     destination = "/etc/sysctl.d/90-kubelet.conf"
-    source      = "${path.root}/hardening/90-kubelet.conf"
+    source      = "${path.module}/hardening/90-kubelet.conf"
   }
   file {
     destination = "/etc/rancher/k3s/config.yaml"
-    source      = "${path.root}/hardening/k3s-config.yaml"
+    source      = "${path.module}/hardening/k3s-config.yaml"
   }
 
   commands = [
