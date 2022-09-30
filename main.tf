@@ -106,6 +106,11 @@ resource "harvester_virtualmachine" "agents" {
     user_data    = local.cloud_init.user_data
     network_data = local.cloud_init.network_data
   }
+
+  # Make agents depend on the server to allow for -target to hit both
+  depends_on = [
+    harvester_virtualmachine.servers
+  ]
 }
 
 # Create a K3S Cluster
