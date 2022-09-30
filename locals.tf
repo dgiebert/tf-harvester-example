@@ -18,6 +18,18 @@ locals {
           ${join("\n    ", (values(harvester_ssh_key.keys))[*].public_key)}
       EOF
   }
-  registration_url = "curl -fL ${var.rancher2.url}/system-agent-install.sh | sudo  sh -s - --server ${var.rancher2.url} --token ${rancher2_cluster_v2.default.cluster_registration_token[0].token}"
+  registration_url      = "curl -fL ${var.rancher2.url}/system-agent-install.sh | sudo  sh -s - --server ${var.rancher2.url} --token ${rancher2_cluster_v2.default.cluster_registration_token[0].token}"
   harvester_kube_config = var.harvester_kube_config != "" ? var.harvester_kube_config : "${path.root}/harvester.kubeconfig"
+  server_vms = {
+    number    = try(var.server_vms.number, 3)
+    cpu       = try(var.server_vms.cpu, 2)
+    memory    = try(var.server_vms.memory, "4Gi")
+    disk_size = try(var.efi.server_vms.disk_size, "20Gi")
+  }
+  agent_vms = {
+    number    = try(var.agent_vms.number, 3)
+    cpu       = try(var.agent_vms.cpu, 2)
+    memory    = try(var.agent_vms.memory, "4Gi")
+    disk_size = try(var.efi.agent_vms.disk_size, "20Gi")
+  }
 }

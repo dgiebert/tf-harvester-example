@@ -37,12 +37,12 @@ resource "harvester_ssh_key" "keys" {
 
 # Harvester VMs created to serve as server nodes (configured via var.server_vms)
 resource "harvester_virtualmachine" "servers" {
-  count       = var.server_vms.number
+  count       = local.server_vms.number
   name        = "${var.cluster.name}-server-${count.index}"
   description = "This server node belongs to the cluster ${var.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
   namespace   = var.namespace
-  cpu         = var.server_vms.cpu
-  memory      = var.server_vms.memory
+  cpu         = local.server_vms.cpu
+  memory      = local.server_vms.memory
   efi         = var.efi
 
   tags = {
@@ -77,12 +77,12 @@ resource "harvester_virtualmachine" "servers" {
 
 # Harvester VMs created to serve as agent nodes (configured via var.agent_vms)
 resource "harvester_virtualmachine" "agents" {
-  count       = var.agent_vms.number
+  count       = local.agent_vms.number
   name        = "${var.cluster.name}-agent-${count.index}"
   description = "This server node belongs to the cluster ${var.cluster.name} running ${harvester_image.opensuse-leap-15_4.display_name}"
   namespace   = var.namespace
-  cpu         = var.agent_vms.cpu
-  memory      = var.agent_vms.memory
+  cpu         = local.agent_vms.cpu
+  memory      = local.agent_vms.memory
   efi         = var.efi
 
   tags = {
