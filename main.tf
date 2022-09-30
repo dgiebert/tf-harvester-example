@@ -153,15 +153,27 @@ resource "ssh_resource" "init-servers" {
   ]
 }
 
-# # Execute the cluster registration command on the agents
-# resource "ssh_resource" "init-agents" {
-#   for_each = { for machine in harvester_virtualmachine.agents : machine.network_interface[0].ip_address => machine }
+# Execute the cluster registration command on the agents
+resource "ssh_resource" "init-agents" {
+  for_each = { for machine in harvester_virtualmachine.agents : machine.network_interface[0].ip_address => machine }
 
-#   host        = each.key
-#   user        = var.ssh_user
-#   private_key = file(var.ssh_key_location)
+  host        = each.key
+  user        = var.ssh_user
+  private_key = file(var.ssh_key_location)
 
-#   commands = [
-#     "${rancher2_cluster_v2.default.cluster_registration_token[0].node_command}"
-#   ]
-# }
+  pre_commands = [
+    "sudo chmod 777 /etc/sysctl.d/"
+  ]
+
+  file {
+    destination = "/etc/sysctl.d/90-kubelet.conf"
+    source      = "${path.module}/hardening/90-kubelet.conf"
+  }
+
+  commands = [
+    "sudo sysctl -p /etc/sysctl.d/90-kubelet.conf",
+    "sudo chmod 755 /etc/sysctl.d/",
+    "sudo chown root:root /etc/sysctl.d/90-kubelet.conf",
+    "${local.registration_url} ${var.cluster.agent_args}"
+  ]
+}
