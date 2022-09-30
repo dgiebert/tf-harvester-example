@@ -71,7 +71,7 @@ The `agent_vms` are not deployed per default (number = 0)
 
 ```
 module "harvester-k3s" {
-  source = "github.com/dgiebert/harvester-k3s-terraform"
+  source = "git::github.com/dgiebert/harvester-k3s-terraform?ref=v0.0.1"
 
   rancher2 = {
     access_key   = "<ACCESS_KEY>"
