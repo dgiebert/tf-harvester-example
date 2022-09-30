@@ -41,23 +41,23 @@ variable "server_vms" {
     disk_size = "20Gi"
   }
   validation {
-    condition     = var.agent_vms.number != null && var.server_vms.number > 0
+    condition     = var.server_vms.number != null && var.server_vms.number > 0
     error_message = "Cluster must have at least one node"
   }
   validation {
-    condition     = var.agent_vms.number != null && var.server_vms.number % 2 == 1
+    condition     = var.server_vms.number != null && var.server_vms.number % 2 == 1
     error_message = "Cluster must have an uneven number of server nodes"
   }
   validation {
-    condition     = var.agent_vms.cpu != null && var.server_vms.cpu >= 2
+    condition     = var.server_vms.cpu != null && var.server_vms.cpu >= 2
     error_message = "Cluster must have at least two cores"
   }
   validation {
-    condition     = var.agent_vms.memory != null && can(regex("^\\d+(Gi|Mi)$", var.server_vms.memory))
+    condition     = var.server_vms.memory != null && can(regex("^\\d+(Gi|Mi)$", var.server_vms.memory))
     error_message = "Cluster must have at least 2Gi"
   }
   validation {
-    condition     = var.agent_vms.disk_size != null && can(regex("^\\d+(Gi|Mi)$", var.server_vms.disk_size))
+    condition     = var.server_vms.disk_size != null && can(regex("^\\d+(Gi|Mi)$", var.server_vms.disk_size))
     error_message = "Nodes must have at least 20Gi"
   }
 }
