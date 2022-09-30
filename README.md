@@ -2,19 +2,21 @@
 
 ## Variables
 
-| Name                  | Default                                                                                   | Description                                                       |
-|:----------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------|
-| namespace             | harvester-public                                                                          | The namespace resources get deployed to within Harvester          |
-| vlan_id               | 2                                                                                         | The VLAN ID used to connect the VMs                               |
-| efi                   | true                                                                                      | Enable EFI on the nodes                                           |
-| ssh_user              | rancher                                                                                   | User for the SSH Login                                            |
-| ssh_keys              | None                                                                                      | e.g. { username = "ssh-rsa AAAAB3Nz[...]" }                       |
-| ssh_key_location      | ~/.ssh/id_rsa                                                                             | SSH Key to connect to the hosts                                   |
-| rancher2              | [see below](https://github.com/dgiebert/harvester-k3s-terraform#rancher2)                 | Configuration for the rancher management server                   |
-| cluster               | [see below](https://github.com/dgiebert/harvester-k3s-terraform#cluster)                  | Configuration for created k3s cluster                             |
-| server_vms            | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the server nodes                                |
-| agent_vms             | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the agent nodes                                 |
-| harvester_kube_config | ./harvester.kubeconfig                                                                    | The location to check for the kubeconfig to connect to Harverster |
+| Name                  | Default                                                                                   | Description                                                                   |
+|:----------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|
+| namespace             | harvester-public                                                                          | The namespace resources get deployed to within Harvester                      |
+| vlan_id               | 2                                                                                         | The VLAN ID used to connect the VMs                                           |
+| efi                   | true                                                                                      | Enable EFI on the nodes                                                       |
+| ssh_user              | rancher                                                                                   | User for the SSH Login                                                        |
+| ssh_keys              | None                                                                                      | e.g. { username = "ssh-rsa AAAAB3Nz[...]" }                                   |
+| ssh_key_location      | ~/.ssh/id_rsa                                                                             | SSH Key to connect to the hosts                                               |
+| harvester_kube_config | ./harvester.kubeconfig                                                                    | The location to check for the kubeconfig to connect to Harverster             |
+| ssh_debug_log         | ""                                                                                        | Enable debug logs for the SSH commands (pass in a file name e.g. './ssh.log') |
+| rancher2              | [see below](https://github.com/dgiebert/harvester-k3s-terraform#rancher2)                 | Configuration for the rancher management server                               |
+| cluster               | [see below](https://github.com/dgiebert/harvester-k3s-terraform#cluster)                  | Configuration for created k3s cluster                                         |
+| server_vms            | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the server nodes                                            |
+| agent_vms             | [see below](https://github.com/dgiebert/harvester-k3s-terraform#server_vms-and-agent_vms) | Configuration for the agent nodes                                             |
+
 #### rancher2
 
 | Name       | Default | Description                                                                                                                  |
@@ -63,8 +65,9 @@ The `agent_vms` are not deployed per default (number = 0)
 
 ### Module
 
-1. Create the server using a target: `terraform apply -target=harvester_virtualmachine.agents`
-2. Create the Cluster with `terraform apply`
+1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
+2. Create the server using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.agents`
+3. Create the Cluster with `terraform apply`
 
 ```
 module "harvester-k3s" {

@@ -10,6 +10,12 @@ variable "harvester_kube_config" {
   default     = ""
 }
 
+variable "ssh_debug_log" {
+  description = "Enable debug logs for the SSH commands (pass in a file name e.g. './ssh.log')"
+  type        = string
+  default     = ""
+}
+
 variable "vlan_id" {
   description = "The VLAN ID used to connect the VMs"
   type        = number

@@ -26,5 +26,5 @@ provider "harvester" {
   kubeconfig = local.harvester_kube_config
 }
 provider "ssh" {
-  debug_log = "${path.root}/ssh.log"
+  debug_log = var.ssh_debug_log
 }
