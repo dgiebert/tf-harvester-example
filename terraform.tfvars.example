@@ -1,0 +1,41 @@
+namespace             = "harvester-public"
+harvester_kube_config = "./harvester.kubeconfig"
+ssh_debug_log         = "./ssh.log"
+vlan_id               = 2
+efi                   = true
+
+server_vms = {
+  number      = 3
+  cpu         = 4
+  memory      = "16Gi"
+  disk_size   = "20Gi"
+  auto_delete = true
+}
+
+agent_vms = {
+  number      = 0
+  cpu         = 2
+  memory      = "4Gi"
+  disk_size   = "20Gi"
+  auto_delete = true
+}
+
+rancher2 = {
+  access_key = ""
+  secret_key = ""
+  url        = ""
+}
+
+ssh_key_location = "~/.ssh/id_rsa"
+ssh_user         = "rancher"
+ssh_keys = {
+  user1 = "ssh-rsa AAAAB3Nza"
+  user2 = "ssh-rsa AAAAB3Nza"
+}
+
+cluster = {
+  name        = "staging"
+  k3s_version = "v1.24.4+k3s1"
+  server_args = "--etcd --controlplane --worker --label 'cattle.io/os=linux'"
+  agent_args  = "--worker --label 'cattle.io/os=linux'"
+}
