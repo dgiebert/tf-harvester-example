@@ -36,10 +36,10 @@ variable "server_vms" {
     auto_delete = optional(bool)
   })
   default = {
-    number    = 3
-    cpu       = 4
-    memory    = "16Gi"
-    disk_size = "20Gi"
+    number      = 3
+    cpu         = 4
+    memory      = "16Gi"
+    disk_size   = "20Gi"
     auto_delete = true
   }
   validation {
@@ -74,10 +74,10 @@ variable "agent_vms" {
     auto_delete = optional(bool)
   })
   default = {
-    number    = 0
-    cpu       = 2
-    memory    = "4Gi"
-    disk_size = "20Gi"
+    number      = 0
+    cpu         = 2
+    memory      = "4Gi"
+    disk_size   = "20Gi"
     auto_delete = true
   }
   validation {
@@ -112,35 +112,25 @@ variable "ssh_keys" {
   default     = {}
 }
 
-variable "rancher2" {
-  description = "User for SSH Login"
-  type        = map(string)
-  default = {
-    access_key = ""
-    secret_key = ""
-    url        = ""
-  }
-  validation {
-    condition     = length(var.rancher2.access_key) > 0
-    error_message = "Access Key must be provided check https://docs.ranchermanager.rancher.io/reference-guides/user-settings/api-keys"
-  }
-  validation {
-    condition     = length(var.rancher2.secret_key) > 0
-    error_message = "Secret Key must be provided check https://docs.ranchermanager.rancher.io/reference-guides/user-settings/api-keys"
-  }
-  validation {
-    condition     = length(var.rancher2.url) > 0
-    error_message = "Rancher URL must be provided"
-  }
+variable "registration_url" {
+  description = "The curl command used to hook up the VMs"
+  type        = string
 }
 
-variable "cluster" {
-  description = "User for SSH Login"
-  type        = map(string)
-  default = {
-    name        = "staging"
-    k3s_version = "v1.24.4+k3s1"
-    server_args = "--etcd --controlplane --label 'cattle.io/os=linux'"
-    agent_args  = "--worker --label 'cattle.io/os=linux'"
-  }
+variable "server_args" {
+  description = "The args passed to the registration command for servers"
+  type        = string
+  default     = "--etcd --controlplane --label 'cattle.io/os=linux'"
+}
+
+variable "agent_args" {
+  description = "The args passed to the registration command for agents"
+  type        = string
+  default     = "--worker --label 'cattle.io/os=linux'"
+}
+
+variable "cluster_name" {
+  description = "Name used for the cluster"
+  type        = string
+  default     = ""
 }

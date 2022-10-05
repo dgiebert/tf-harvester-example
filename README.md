@@ -6,6 +6,7 @@
 |:----------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|
 | namespace             | harvester-public                                                                          | The namespace resources get deployed to within Harvester                      |
 | vlan_id               | 2                                                                                         | The VLAN ID used to connect the VMs                                           |
+| vlan_name             | ""                                                                                        | Set this if you want to import a network                                      |
 | efi                   | true                                                                                      | Enable EFI on the nodes                                                       |
 | ssh_user              | rancher                                                                                   | User for the SSH Login                                                        |
 | ssh_keys              | None                                                                                      | e.g. { username = "ssh-rsa AAAAB3Nz[...]" }                                   |
@@ -49,13 +50,12 @@ The `agent_vms` are not deployed per default (number = 0)
 ## Usage
 
 1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
-2. Create the server using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.servers`
-2. Create the agents using a target: `terraform apply -target=module.harvester-k3s.harvester_virtualmachine.agents`
+2. Create the API Keys [docs](https://docs.ranchermanager.rancher.io/reference-guides/user-settings/api-keys)
 3. Create the Cluster with `terraform apply`
 
 ```
 module "harvester-k3s" {
-  source = "git::github.com/dgiebert/harvester-k3s-terraform?ref=v0.0.4"
+  source = "git::github.com/dgiebert/harvester-k3s-terraform?ref=v0.1.0"
 
   rancher2 = {
     access_key   = "<ACCESS_KEY>"
@@ -68,3 +68,6 @@ module "harvester-k3s" {
   }
 }
 ```
+
+### Tipps
+- `terraform import module.harvester-k3s.module.nodes.harvester_network.vlan namespace/network-name`
