@@ -108,7 +108,7 @@ variable "ssh_user" {
 
 variable "ssh_keys" {
   description = "The SSH keys to connect to the VMs"
-  type        = map(any)
+  type        = any
   default     = {}
 }
 
@@ -133,4 +133,14 @@ variable "cluster_name" {
   description = "Name used for the cluster"
   type        = string
   default     = ""
+}
+variable "domain" {
+  description = "domain for VM"
+  type        = string
+  default     = "local"
+}
+variable "cluster_vlan" {
+  description = "Name of the Cluster VLAN"
+  type        = string
+  default     = "cluster-vlan"
 }
