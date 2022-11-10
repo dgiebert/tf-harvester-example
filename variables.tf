@@ -101,7 +101,7 @@ variable "efi" {
 }
 
 variable "ssh_user" {
-  description = "User for SSH Login"
+  description = "User for SSH to connect to the VMs"
   type        = string
   default     = "rancher"
 }
@@ -116,8 +116,12 @@ variable "ssh_keys" {
 }
 
 variable "rancher2" {
-  description = "User for SSH Login"
-  type        = map(string)
+  description = "Connection details for the Rancher2 API"
+  type = object({
+    access_key = string,
+    secret_key = string,
+    url        = string
+  })
   default = {
     access_key = ""
     secret_key = ""
@@ -149,14 +153,22 @@ variable "cluster_vlan" {
   default     = "cluster-vlan"
 }
 
-variable "cluster" {
-  description = "User for SSH Login"
-  type        = any
+variable "clusterInfo" {
+  description = "Details for the k3s cluster to be created"
+  type = object({
+    name             = optional(string),
+    labels           = optional(map(string)),
+    k3s_version      = optional(string),
+    server_args      = optional(string),
+    agent_args       = optional(string),
+    registration_url = optional(string)
+  })
   default = {
-    name        = "staging"
-    labels      = {}
-    k3s_version = "v1.24.4+k3s1"
-    server_args = "--etcd --controlplane --label 'cattle.io/os=linux'"
-    agent_args  = "--worker --label 'cattle.io/os=linux'"
+    name             = "staging"
+    labels           = {}
+    k3s_version      = "v1.24.4+k3s1"
+    server_args      = "--etcd --controlplane --label 'cattle.io/os=linux'"
+    agent_args       = "--worker --label 'cattle.io/os=linux'"
+    registration_url = ""
   }
 }
