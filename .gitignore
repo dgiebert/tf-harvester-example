@@ -2,6 +2,5 @@ terraform.tfvars
 .auto.tfvars
 terraform.tfstate
 terraform.tfstate.backup
-ssh.log
 .terraform
 harvester.kubeconfig

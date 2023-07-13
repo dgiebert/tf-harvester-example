@@ -2,18 +2,23 @@ terraform {
   required_providers {
     harvester = {
       source  = "harvester/harvester"
-      version = "0.6.0"
+      version = "0.6.2"
     }
     rancher2 = {
       source  = "rancher/rancher2"
-      version = "1.24.1"
+      version = "3.0.2"
     }
   }
   required_version = "~> 1.3"
 }
 
+# Some day ...
+#resource "local_file" "harvester_kube_config" {
+#  content  = data.rancher2_cluster_v2.harvester.kube_config
+#  filename = "${path.module}/harvester.kubeconfig"
+#}
 provider "harvester" {
-  kubeconfig = local.harvester_kube_config
+  kubeconfig = var.harvester_kube_config != "" ? var.harvester_kube_config : "${path.root}/harvester.kubeconfig"
 }
 
 provider "rancher2" {

@@ -4,16 +4,14 @@
 # see: https://terraform-docs.io/user-guide/configuration/formatter
 formatter: markdown table
 
-header-from: docs/header.md
+content: |2-
 
-content: |-
-  {{ .Header }}
+  ## Usage
 
-  ## [Example](docs/example.tf)
+  1. Get the Harvester kubeconfig and place it in `harvester.kubeconfig`
+  1. Adapt the config
+  1. Configure Harvester with `terraform apply`
 
-  ```hcl
-  {{ include "docs/example.tf" }}
-  ```
 
   {{ .Requirements }}
 

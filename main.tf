@@ -1,29 +1,109 @@
-module "cluster" {
-  # Do not create a cluster if we pass along an registration url
-  count                 = var.clusterInfo.registration_url == null ? 1 : 0
-  source                = "./modules/cluster"
-  cluster_name          = local.cluster_name
-  k3s_version           = local.k3s_version
-  labels                = local.labels
-  rancher2              = var.rancher2
-  enable_network_policy = true # Experimental
+resource "harvester_clusternetwork" "vlans" {
+  name = "vlans"
 }
 
-module "nodes" {
-  source                = "./modules/nodes"
-  cluster_name          = local.cluster_name
-  efi                   = var.efi
-  ssh_user              = var.ssh_user
-  ssh_keys              = var.ssh_keys
-  namespace             = var.namespace
-  vlan_name             = local.vlan_name
-  cluster_vlan          = var.cluster_vlan
-  harvester_kube_config = local.harvester_kube_config
-  vlan_id               = var.vlan_id
-  domain                = var.domain
-  server_vms            = local.server_vms # Defaults specified in locals.tf
-  agent_vms             = local.agent_vms  # Defaults specified in locals.tf
-  registration_url      = local.registration_url
-  server_args           = local.server_args
-  agent_args            = local.agent_args
+resource "harvester_vlanconfig" "config" {
+  name = "config"
+
+  uplink {
+    nics        = var.cluster_networks.nics
+    bond_mode   = coalesce(var.cluster_networks.bond_mode, "active-backup")
+    mtu         = coalesce(var.cluster_networks.mtu, 1500)
+    bond_miimon = coalesce(var.cluster_networks.bond_miimon, 0)
+  }
+
+  cluster_network_name = harvester_clusternetwork.vlans.name
+}
+
+resource "harvester_network" "vlan" {
+  for_each = { for o in flatten([
+    for index, net in var.cluster_vlans : [
+      for vlan in net.vlans : {
+        vlan_id   = vlan
+        namespace = index
+      }
+  ]]) : o.vlan_id => o }
+
+  name       = "vlan-${each.key}"
+  namespace  = coalesce(each.value.namespace, "harvester-public")
+  vlan_id    = each.key
+  route_mode = "auto"
+
+  cluster_network_name = harvester_clusternetwork.vlans.name
+}
+
+resource "harvester_image" "os" {
+  for_each  = var.images
+  name      = each.key
+  namespace = coalesce(each.value.namespace, "harvester-public")
+
+  display_name = coalesce(each.value.name, each.key)
+  source_type  = "download"
+  url          = each.value.url
+}
+
+data "rancher2_cluster_v2" "harvester" {
+  name = var.harvester_cluster_name
+}
+
+resource "rancher2_project" "teams" {
+  for_each = var.teams
+
+  name       = each.key
+  cluster_id = data.rancher2_cluster_v2.harvester.cluster_v1_id
+  resource_quota {
+    project_limit {
+      limits_cpu       = each.value.limits.limits_cpu
+      limits_memory    = each.value.limits.limits_memory
+      requests_storage = each.value.limits.requests_storage
+    }
+    namespace_default_limit {
+      limits_cpu       = each.value.limits.limits_cpu
+      limits_memory    = each.value.limits.limits_memory
+      requests_storage = each.value.limits.requests_storage
+    }
+  }
+}
+
+resource "rancher2_namespace" "foo" {
+  for_each = { for o in flatten([
+    for index, team in var.teams : [
+      for member in team.members : {
+        member = member
+        team   = index
+      }
+  ]]) : o.team => o }
+
+  name        = "${each.value.team}-${each.value.member}"
+  project_id  = rancher2_project.teams[each.key].id
+  description = "${each.value.member}'s namespace for project ${each.value.team}"
+}
+
+data "rancher2_user" "members" {
+  for_each = { for o in distinct(flatten([
+    for index, team in var.teams : [
+      for member in team.members : member
+    ]
+  ])) : o => o }
+
+  name = each.key
+}
+
+data "rancher2_role_template" "project-member" {
+  name = "Project Member"
+}
+
+resource "rancher2_project_role_template_binding" "foo" {
+  for_each = { for o in flatten([
+    for index, team in var.teams : [
+      for member in team.members : {
+        member = member
+        team   = index
+      }
+  ]]) : o.team => o }
+
+  name             = "${rancher2_project.teams[each.key].name}-${data.rancher2_user.members[each.value.member].username}"
+  project_id       = rancher2_project.teams[each.key].id
+  role_template_id = data.rancher2_role_template.project-member.id
+  user_id          = data.rancher2_user.members[each.value.member].id
 }

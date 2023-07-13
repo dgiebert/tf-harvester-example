@@ -1,41 +1,57 @@
 <!-- BEGIN_TF_DOCS -->
-agent_vms = {
-  "auto_delete": true,
-  "cpu": 2,
-  "disk_size": "20Gi",
-  "memory": "4Gi",
-  "number": 0
+backup_config = {
+  "acces_key_id": "blub",
+  "bucket": "bucket",
+  "region": "eu-central-1",
+  "secret_key": "blub2",
+  "type": "s3"
 }
-clusterInfo = {
-  "agent_args": "--worker --label 'cattle.io/os=linux'",
-  "k3s_version": "v1.24.4+k3s1",
-  "labels": {},
-  "name": "staging",
-  "registration_url": "",
-  "server_args": "--etcd --controlplane --label 'cattle.io/os=linux'"
+cluster_networks = {
+  "nics": [
+    "enp38s0"
+  ]
 }
-cluster_vlan          = "cluster-vlan"
-domain                = "local"
-efi                   = true
-harvester_kube_config = ""
-namespace             = "harvester-public"
-rancher2 = {
-  "access_key": "",
-  "secret_key": "",
-  "url": ""
+cluster_vlans = {
+  "harvester-public": {
+    "vlans": [
+      2
+    ]
+  },
+  "suma": {
+    "vlans": [
+      3
+    ]
+  }
 }
-server_vms = {
-  "auto_delete": true,
-  "cpu": 4,
-  "disk_size": "20Gi",
-  "memory": "16Gi",
-  "number": 3
+harvester_cluster_name = "harvey"
+harvester_kube_config  = ""
+images = {
+  "opensuse154": {
+    "name": "openSUSE-Leap-15.4.x86_64-NoCloud.qcow2",
+    "url": "https://downloadcontent-us1.opensuse.org/repositories/Cloud:/Images:/Leap_15.4/images/openSUSE-Leap-15.4.x86_64-NoCloud.qcow2"
+  }
 }
-ssh_keys = {
-  "user1": "ssh-rsa AAAAB3Nza",
-  "user2": "ssh-rsa AAAAB3Nza"
+rancher2 = ""
+teams = {
+  "team1": {
+    "limits": {
+      "limits_cpu": "100m",
+      "limits_memory": "100Mi",
+      "requests_storage": "1Gi"
+    },
+    "members": [
+      "test"
+    ]
+  },
+  "team2": {
+    "limits": {
+      "limits_cpu": "100m",
+      "limits_memory": "100Mi",
+      "requests_storage": "1Gi"
+    },
+    "members": [
+      "test"
+    ]
+  }
 }
-ssh_user  = "rancher"
-vlan_id   = 2
-vlan_name = ""
 <!-- END_TF_DOCS -->

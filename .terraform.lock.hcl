@@ -2,33 +2,33 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/harvester/harvester" {
-  version     = "0.6.0"
-  constraints = "0.6.0"
+  version     = "0.6.2"
+  constraints = "0.6.2"
   hashes = [
-    "h1:BwR9izJNphnHEFKy6R0kWNpgctE/ZLoQmnbK4ksgdVo=",
-    "zh:3d28801903906cd37f31c8e687c2387f49d539681f13999079cd7332d48cbc46",
-    "zh:541d634b2466c3a7dc4017fe29a0db51fbc4f38abd1fbe26df68583e6e832845",
-    "zh:768cf29e0c4b141e71f1d9cc49897d5648cc28f1b391e353372a6be3a4f3d2ba",
-    "zh:b2ef74c3ca3db44dc4116b6d7f4e4ed37af68de77d40693995ac3d4611d22e72",
+    "h1:gaxuDNpbSDT6dhsu4C4q0rnpokn3fUVDcok3CgtvU3U=",
+    "zh:73518d77caaada1a2fee68bfbf9cb0a22026ae5d8e4dbf39f1a527412e6a9774",
+    "zh:a68cf7f15078a6e7441b1f28f3c39e9389a2c572b92a9165a1f2eb53db37849f",
+    "zh:baa053e61c0325b81330b97ebf7ce0ba77d524e871826243d05ac578fea2ec7f",
+    "zh:e9fc8bd6c19056b4eaaf22ac0b1b09a7f63e9c20b5a86023ce2dcf54f21646ce",
   ]
 }
 
 provider "registry.terraform.io/rancher/rancher2" {
-  version     = "1.24.1"
-  constraints = "1.24.1"
+  version     = "3.0.2"
+  constraints = "3.0.2"
   hashes = [
-    "h1:OfKUpb1hChdO+CluyNKjmrQimFJAJAA+s96Pp6vK6FQ=",
-    "zh:019607a142db3cb24c40837dc8a65e93a86b56bf4f8f8ebedf6433a8108b8a31",
-    "zh:0bad17fb2bdc730102a056b3ca63fb9d890d2f85b47316620fc4f750fdbef078",
-    "zh:46e73b838be94c24a46dba08461a7b955b03d32f050b7ba819e8f2bb5af1fe5f",
-    "zh:574217a569ae4de201d43c95e09cdf5e22ea259c45b38a3b9d6247eac1ad3abf",
-    "zh:591488b3bd1016ef9ce51b03fe08c4a2954d16be15157a4c075e833dc1b6e248",
-    "zh:6657904ec02e17518bc712147fa618d84a1a9b3b3a275c3e112072f2dec12a16",
-    "zh:6caf485186f466a485c58b36216f8cc39e3d4f08945b8ea9835158cfb0a73398",
-    "zh:6e1cacae4ca25e2ad442a1ca12180a8226314c46c4d1c23871ff54e484392048",
-    "zh:7b5dc8f2268dab0ad8ee38513462835b1269f5848fdd96d8e8f20a4afeb5509b",
-    "zh:9ed3c38771c6a7232c378553fbb2b2d66dece982f8898fc91e2d6c0ddac00a88",
-    "zh:bb06e06be0de781b134f565986be04e8581cdd68c58af520c3304c84b29c2f35",
-    "zh:fb7f8d24b8b1681e50d3ee4baf7080ff1bbf8c30891ef27afcb5d95fb610d9fe",
+    "h1:OsK7qZXIdF19UYhJoPVotbQvIKBcWY6PBCZebXfwEf0=",
+    "zh:34684e72486205af21124419448253afd643fb98e7ca86cb57292b6ce30afab2",
+    "zh:487b53b0b637c5c560088fe7116ed8463fa05d0cd0d1370528bb9fa678592759",
+    "zh:68dff3a725309a682864013a5125d886cc50a015d37e12dc3eca7c1f2225565a",
+    "zh:84697b037fdf0a655050a1c4241afe351213d36256f5d536f59becffa0f3a1fe",
+    "zh:97c1fbd42331633e1c35fb91924686a12af80fb987a4ea7a96ffe97ac8e41aed",
+    "zh:a88c9a4b82d9b7788e4cdec820561786671109fdb859a83acd2d60adfc64689f",
+    "zh:b299d414e89ed1e8fa77d90fc9a0d052a2d2d11a430154109eeb03e82dcd83bc",
+    "zh:d73b0bf7800f796a01d11c4826cde96a20139efa7793c973b35c8384c666948c",
+    "zh:d77078f41544cfd7f79f37d93583b27fe205bcd3372e5229f910a1ee4c1a1587",
+    "zh:d818ab2f778aba423fc10c9ebce5ff923e016befee34cd3645ee0d5f2ee99993",
+    "zh:e7f0d7ff7363c1040dcdcb4ce78d538685d41b6bc88f9b97f48c74fadd5de9fd",
+    "zh:f94070357089ef6ba124061e19088e43d6b3c12280fae72e87d52eaaeb8b1ce1",
   ]
 }
