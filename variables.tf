@@ -76,48 +76,52 @@ variable "images" {
   }
 }
 
-variable "backup_config" {
-  type = object({
-    type         = string
-    region       = string
-    bucket       = string
-    acces_key_id = string
-    secret_key   = string
-  })
-  default = {
-    type         = "s3"
-    region       = "eu-central-1"
-    bucket       = "bucket"
-    acces_key_id = "blub"
-    secret_key   = "blub2"
-  }
-}
-
 variable "teams" {
   type = map(object({
     limits = object({
-      limits_cpu       = string
-      limits_memory    = string
-      requests_storage = string
-    })
+      project = object({
+        cpu              = string
+        memory           = string
+        requests_storage = string
+      })
+      namespace = object({
+        cpu              = string
+        memory           = string
+        requests_storage = string
+    }) })
     members = list(string)
+    additional_namespace = optional(map(object({
+      limits = object({
+        cpu              = string
+        memory           = string
+        requests_storage = string
+      })
+    })))
   }))
   default = {
     "team1" = {
-      limits = {
-        limits_cpu       = "100m"
-        limits_memory    = "100Mi"
-        requests_storage = "1Gi"
-      }
       members = ["test"]
-    }
-    "team2" = {
       limits = {
-        limits_cpu       = "100m"
-        limits_memory    = "100Mi"
-        requests_storage = "1Gi"
+        project = {
+          cpu              = "2000m"
+          memory           = "2000Mi"
+          requests_storage = "2Gi"
+        }
+        namespace = {
+          cpu              = "1500m"
+          memory           = "1500Mi"
+          requests_storage = "1Gi"
+        }
       }
-      members = ["test"]
+      additional_namespace = {
+        "service" = {
+          limits = {
+            cpu              = "500m"
+            memory           = "500Mi"
+            requests_storage = "1Gi"
+          }
+        }
+      }
     }
   }
 }

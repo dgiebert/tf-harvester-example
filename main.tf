@@ -53,31 +53,56 @@ resource "rancher2_project" "teams" {
   cluster_id = data.rancher2_cluster_v2.harvester.cluster_v1_id
   resource_quota {
     project_limit {
-      limits_cpu       = each.value.limits.limits_cpu
-      limits_memory    = each.value.limits.limits_memory
-      requests_storage = each.value.limits.requests_storage
+      limits_cpu       = each.value.limits.project.cpu
+      limits_memory    = each.value.limits.project.memory
+      requests_storage = each.value.limits.project.requests_storage
     }
     namespace_default_limit {
-      limits_cpu       = each.value.limits.limits_cpu
-      limits_memory    = each.value.limits.limits_memory
+      limits_cpu       = each.value.limits.namespace.cpu
+      limits_memory    = each.value.limits.namespace.memory
+      requests_storage = each.value.limits.namespace.requests_storage
+    }
+  }
+}
+
+resource "rancher2_namespace" "team" {
+  for_each = var.teams
+  # Per Team member namespaces
+  # { for o in flatten([
+  #   for index, team in var.teams : [
+  #     for member in team.members : {
+  #       member = member
+  #       team   = index
+  #     }
+  # ]]) : o.team => o }
+
+  name        = each.key
+  project_id  = rancher2_project.teams[each.key].id
+  description = "${each.key}'s default namespace for project"
+
+  resource_quota {
+    limit {
+      limits_cpu       = each.value.limits.namespace.cpu
+      limits_memory    = each.value.limits.namespace.memory
+      requests_storage = each.value.limits.namespace.requests_storage
+    }
+  }
+}
+
+resource "rancher2_namespace" "services" {
+  for_each = one([for index, team in var.teams : { for ns, limits in team.additional_namespace : "${index}-${ns}" => limits }])
+
+  name       = each.key
+  project_id = rancher2_project.teams[element(split("-", each.key), 0)].id
+  resource_quota {
+    limit {
+      limits_cpu       = each.value.limits.cpu
+      limits_memory    = each.value.limits.memory
       requests_storage = each.value.limits.requests_storage
     }
   }
 }
 
-resource "rancher2_namespace" "foo" {
-  for_each = { for o in flatten([
-    for index, team in var.teams : [
-      for member in team.members : {
-        member = member
-        team   = index
-      }
-  ]]) : o.team => o }
-
-  name        = "${each.value.team}-${each.value.member}"
-  project_id  = rancher2_project.teams[each.key].id
-  description = "${each.value.member}'s namespace for project ${each.value.team}"
-}
 
 data "rancher2_user" "members" {
   for_each = { for o in distinct(flatten([
@@ -86,14 +111,14 @@ data "rancher2_user" "members" {
     ]
   ])) : o => o }
 
-  name = each.key
+  username = each.key
 }
 
 data "rancher2_role_template" "project-member" {
   name = "Project Member"
 }
 
-resource "rancher2_project_role_template_binding" "foo" {
+resource "rancher2_project_role_template_binding" "members" {
   for_each = { for o in flatten([
     for index, team in var.teams : [
       for member in team.members : {
@@ -102,7 +127,7 @@ resource "rancher2_project_role_template_binding" "foo" {
       }
   ]]) : o.team => o }
 
-  name             = "${rancher2_project.teams[each.key].name}-${data.rancher2_user.members[each.value.member].username}"
+  name             = "${rancher2_project.teams[each.key].name}-${data.rancher2_user.members[each.value.member].username}-member"
   project_id       = rancher2_project.teams[each.key].id
   role_template_id = data.rancher2_role_template.project-member.id
   user_id          = data.rancher2_user.members[each.value.member].id
