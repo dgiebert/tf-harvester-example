@@ -8,6 +8,9 @@ terraform {
       source  = "rancher/rancher2"
       version = "3.0.2"
     }
+    kubernetes = {
+      version = "2.22.0"
+    }
   }
   required_version = "~> 1.3"
 }
@@ -18,11 +21,15 @@ terraform {
 #  filename = "${path.module}/harvester.kubeconfig"
 #}
 provider "harvester" {
-  kubeconfig = var.harvester_kube_config != "" ? var.harvester_kube_config : "${path.root}/harvester.kubeconfig"
+  kubeconfig = local.harvester_kubeconfig_path
 }
 
 provider "rancher2" {
   api_url    = var.rancher2.url
   access_key = var.rancher2.access_key
   secret_key = var.rancher2.secret_key
+}
+
+provider "kubernetes" {
+  config_path    = local.harvester_kubeconfig_path
 }

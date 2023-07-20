@@ -13,6 +13,13 @@ resource "harvester_vlanconfig" "config" {
   }
 
   cluster_network_name = harvester_clusternetwork.vlans.name
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      uplink[0].bond_miimon
+    ]
+  }
 }
 
 resource "harvester_network" "vlan" {
@@ -42,15 +49,41 @@ resource "harvester_image" "os" {
   url          = each.value.url
 }
 
-data "rancher2_cluster_v2" "harvester" {
-  name = var.harvester_cluster_name
+resource "rancher2_cluster" "harvester" {
+  name = "harvey"
+}
+
+# Ugly hack: https://github.com/hashicorp/terraform-provider-kubernetes/issues/723
+resource "null_resource" "cluster-registration-url" {
+  triggers = {
+    kubeconfig = local.harvester_kubeconfig_path
+    manifest_url = rancher2_cluster.harvester.cluster_registration_token[0].manifest_url
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+      kubectl patch --type merge settings cluster-registration-url -p '{"value": "${self.triggers.manifest_url}"}' --kubeconfig ${self.triggers.kubeconfig}
+    EOT
+  }
+  provisioner "local-exec" {
+    when    = destroy
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+      kubectl patch --type merge settings cluster-registration-url -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
+    EOT
+  }
+}
+
+# Wait for the cluster to be active
+resource "rancher2_cluster_sync" "harvester" {
+  cluster_id =  rancher2_cluster.harvester.id
 }
 
 resource "rancher2_project" "teams" {
   for_each = var.teams
 
   name       = each.key
-  cluster_id = data.rancher2_cluster_v2.harvester.cluster_v1_id
+  cluster_id = rancher2_cluster_sync.harvester.id
   resource_quota {
     project_limit {
       limits_cpu       = each.value.limits.project.cpu
