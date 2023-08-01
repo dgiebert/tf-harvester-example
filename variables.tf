@@ -81,9 +81,9 @@ variable "settings" {
   # type = map()
   default = {
     overcommit-config = {
-      "cpu": 200,
-      "memory": 100,
-      "storage": 100
+      "cpu" : 200,
+      "memory" : 100,
+      "storage" : 100
     }
     # auto-disk-provision-paths = "/dev/sd*"
     backup-target = {
@@ -95,6 +95,15 @@ variable "settings" {
       "bucketRegion" : "us‑east‑2",
       "cert" : "",
       "virtualHostedStyle" : false
+    }
+  }
+}
+
+variable "managed_charts" {
+  description = "Settings to be applied to Harvester"
+  default = {
+    rancher-monitoring = {
+      "spec.values.alertmanager.alertmanagerSpec.externalUrl" = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
     }
   }
 }

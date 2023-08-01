@@ -76,6 +76,20 @@ resource "null_resource" "settings" {
   }
 }
 
+resource "null_resource" "managed_charts" {
+  for_each = var.settings
+  triggers = {
+    kubeconfig = local.harvester_kubeconfig_path
+    key        = each.key
+    value      = replace(jsonencode(each.value), "\"", "\\\"")
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+     kubectl patch --type merge managedchart ${self.triggers.key} -p ${self.triggers.value} --kubeconfig ${self.triggers.kubeconfig}
+   EOT
+  }
+}
 
 resource "rancher2_project" "teams" {
   for_each = var.teams
