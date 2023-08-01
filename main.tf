@@ -104,7 +104,7 @@ resource "rancher2_project" "teams" {
     }
     namespace_default_limit {
       limits_cpu       = var.project_limits.cpu              # coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
-      limits_memory    = var.project_limits.cpu              # coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
+      limits_memory    = var.project_limits.memory           # coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
       requests_storage = var.project_limits.requests_storage # coalesce(each.value.limits.namespace.requests_storage, var.project_limits.requests_storage)
     }
   }
@@ -125,28 +125,28 @@ resource "rancher2_namespace" "team" {
   project_id  = rancher2_project.teams[each.key].id
   description = "${each.key}'s default namespace for project"
 
-  resource_quota {
-    limit {
-      limits_cpu       = each.value.limits.namespace.cpu
-      limits_memory    = each.value.limits.namespace.memory
-      requests_storage = each.value.limits.namespace.requests_storage
-    }
-  }
+  # resource_quota {
+  #   limit {
+  #     limits_cpu       = each.value.limits.namespace.cpu
+  #     limits_memory    = each.value.limits.namespace.memory
+  #     requests_storage = each.value.limits.namespace.requests_storage
+  #   }
+  # }
 }
 
-resource "rancher2_namespace" "services" {
-  for_each = coalesce(one([for index, team in var.teams : { for ns, limits in team.additional_namespace : "${index}-${ns}" => limits }]), {})
+# resource "rancher2_namespace" "services" {
+#   for_each = coalesce(one([for index, team in var.teams : { for ns, limits in team.additional_namespace : "${index}-${ns}" => limits }]), {})
 
-  name       = each.key
-  project_id = rancher2_project.teams[element(split("-", each.key), 0)].id
-  resource_quota {
-    limit {
-      limits_cpu       = each.value.limits.cpu
-      limits_memory    = each.value.limits.memory
-      requests_storage = each.value.limits.requests_storage
-    }
-  }
-}
+#   name       = each.key
+#   project_id = rancher2_project.teams[element(split("-", each.key), 0)].id
+#   resource_quota {
+#     limit {
+#       limits_cpu       = each.value.limits.cpu
+#       limits_memory    = each.value.limits.memory
+#       requests_storage = each.value.limits.requests_storage
+#     }
+#   }
+# }
 
 
 data "rancher2_role_template" "project-member" {
@@ -158,11 +158,11 @@ resource "rancher2_project_role_template_binding" "members" {
     for index, team in var.teams : [
       for group in team.groups : {
         group = group
-        team   = index
+        team  = index
       }
   ]]) : o.team => o }
 
-  name             = "${rancher2_project.teams[each.key].name}-${each.value.member}"
+  name               = "${rancher2_project.teams[each.key].name}-${each.value.group}"
   project_id         = rancher2_project.teams[each.key].id
   role_template_id   = data.rancher2_role_template.project-member.id
   group_principal_id = "azuread_group://${each.value.group}"
