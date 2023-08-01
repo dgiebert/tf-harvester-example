@@ -64,14 +64,14 @@ resource "null_resource" "settings" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-     kubectl patch --type merge settings ${self.triggers.keys} -p '{"value": "${self.triggers.values}"}' --kubeconfig ${self.triggers.kubeconfig}
+     kubectl patch --type merge settings ${self.triggers.key} -p '{"value": "${self.triggers.values}"}' --kubeconfig ${self.triggers.kubeconfig}
    EOT
   }
   provisioner "local-exec" {
     when        = destroy
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-     kubectl patch --type merge settings ${self.triggers.keys} -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
+     kubectl patch --type merge settings ${self.triggers.key} -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
    EOT
   }
 }
