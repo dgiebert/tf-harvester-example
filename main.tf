@@ -80,7 +80,7 @@ resource "null_resource" "managed_charts" {
   for_each = { for o in flatten([
     for index, patches in var.managed_charts : [
       for patch in patches : {
-        patch = replace(jsonencode(each.value.patch), "\"", "\\\"")
+        patch = replace(jsonencode(patch), "\"", "\\\"")
         chart = index
       }
   ]]) : "${o.chart}-${sha256(o.patch)}" => o }
