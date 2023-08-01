@@ -98,14 +98,14 @@ resource "rancher2_project" "teams" {
   cluster_id = data.rancher2_cluster.harvester.id
   resource_quota {
     project_limit {
-      limits_cpu       = coalesce(each.value.limits.project.cpu, var.project_limits.cpu)
-      limits_memory    = coalesce(each.value.limits.project.memory, var.project_limits.memory)
-      requests_storage = coalesce(each.value.limits.project.requests_storage, var.project_limits.requests_storage)
+      limits_cpu       = var.project_limits.cpu #coalesce(each.value.limits.project.cpu, var.project_limits.cpu)
+      limits_memory    = var.project_limits.memory # coalesce(each.value.limits.project.memory, var.project_limits.memory)
+      requests_storage = var.project_limits.requests_storage # coalesce(each.value.limits.project.requests_storage, var.project_limits.requests_storage)
     }
     namespace_default_limit {
-      limits_cpu       = coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
-      limits_memory    = coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
-      requests_storage = coalesce(each.value.limits.namespace.requests_storage, var.project_limits.requests_storage)
+      limits_cpu       = var.project_limits.cpu # coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
+      limits_memory    = var.project_limits.cpu # coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
+      requests_storage = var.project_limits.requests_storage # coalesce(each.value.limits.namespace.requests_storage, var.project_limits.requests_storage)
     }
   }
 }
@@ -156,7 +156,7 @@ data "rancher2_user" "members" {
     ]
   ])) : o => o }
 
-  username = each.key
+  name = each.key
 }
 
 data "rancher2_role_template" "project-member" {

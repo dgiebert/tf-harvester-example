@@ -126,7 +126,7 @@ variable "project_limits" {
 
 variable "teams" {
   type = map(object({
-    limits = object({
+    limits = optional(object({
       project = object({
         cpu              = string
         memory           = string
@@ -136,7 +136,7 @@ variable "teams" {
         cpu              = string
         memory           = string
         requests_storage = string
-    }) })
+    }) }))
     members = list(string)
     additional_namespace = optional(map(object({
       limits = object({
