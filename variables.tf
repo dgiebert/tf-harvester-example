@@ -189,3 +189,12 @@ variable "teams" {
     }
   }
 }
+
+
+variable "slack_webhook" {
+  type = string
+}
+
+variable "slack_channel" {
+  type = string
+}

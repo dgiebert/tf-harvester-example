@@ -174,3 +174,48 @@ resource "rancher2_project_role_template_binding" "members" {
   role_template_id   = data.rancher2_role_template.project-member.id
   group_principal_id = "azuread_group://${each.value.group}"
 }
+
+
+resource "kubernetes_manifest" "alertmanager-config" {
+  manifest = {
+    "apiVersion" = "monitoring.coreos.com/v1alpha1"
+    "kind"       = "AlertmanagerConfig"
+    "metadata" = {
+      "name"      = "slack"
+      "namespace" = "longhorn-system"
+    }
+    "spec" = {
+      "receivers" = [{
+        "name" = "slack"
+        "slackConfigs" = [
+          {
+            "apiURL" = {
+              "key" : "url"
+              "name" : "harvester-cluster-01-slack-webhook"
+            }
+            "channel" : var.slack_channel
+            "sendResolved" : true
+            "httpConfig" : {}
+          }
+        ]
+        }
+      ]
+      "route" = {
+        "groupInterval"  = "5m"
+        "groupWait"      = "1m"
+        "receiver"       = "slack"
+        "repeatInterval" = "1d"
+      }
+    }
+  }
+}
+
+resource "kubernetes_secret" "slack-webhook" {
+  metadata {
+    name      = "harvester-cluster-01-slack-webhook"
+    namespace = "cattle-monitoring-system"
+  }
+  data = {
+    url = var.slack_webhook
+  }
+}
