@@ -124,31 +124,34 @@ variable "project_limits" {
   }
 }
 
+variable "ad_group_search_base" {
+  default = ""
+}
 variable "teams" {
-  type = map(object({
-    limits = optional(object({
-      project = object({
-        cpu              = string
-        memory           = string
-        requests_storage = string
-      })
-      namespace = object({
-        cpu              = string
-        memory           = string
-        requests_storage = string
-    }) }))
-    members = list(string)
-    additional_namespace = optional(map(object({
-      limits = object({
-        cpu              = string
-        memory           = string
-        requests_storage = string
-      })
-    })))
-  }))
+  # type = map(object({
+  #   limits = optional(object({
+  #     project = object({
+  #       cpu              = string
+  #       memory           = string
+  #       requests_storage = string
+  #     })
+  #     namespace = object({
+  #       cpu              = string
+  #       memory           = string
+  #       requests_storage = string
+  #   }) }))
+  #   members = string
+  #   additional_namespace = optional(map(object({
+  #     limits = object({
+  #       cpu              = string
+  #       memory           = string
+  #       requests_storage = string
+  #     })
+  #   })))
+  # }))
   default = {
     "team1" = {
-      members = ["test"]
+      group = ["fffffff-ffff-ffff-ffff-fffffffffff"]
       limits = {
         project = {
           cpu              = "2000m"

@@ -59,7 +59,7 @@ resource "null_resource" "settings" {
   triggers = {
     kubeconfig = local.harvester_kubeconfig_path
     key        = each.key
-    value      = replace(jsonencode(each.value), "\"", "\\\"") 
+    value      = replace(jsonencode(each.value), "\"", "\\\"")
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
@@ -98,13 +98,13 @@ resource "rancher2_project" "teams" {
   cluster_id = data.rancher2_cluster.harvester.id
   resource_quota {
     project_limit {
-      limits_cpu       = var.project_limits.cpu #coalesce(each.value.limits.project.cpu, var.project_limits.cpu)
-      limits_memory    = var.project_limits.memory # coalesce(each.value.limits.project.memory, var.project_limits.memory)
+      limits_cpu       = var.project_limits.cpu              #coalesce(each.value.limits.project.cpu, var.project_limits.cpu)
+      limits_memory    = var.project_limits.memory           # coalesce(each.value.limits.project.memory, var.project_limits.memory)
       requests_storage = var.project_limits.requests_storage # coalesce(each.value.limits.project.requests_storage, var.project_limits.requests_storage)
     }
     namespace_default_limit {
-      limits_cpu       = var.project_limits.cpu # coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
-      limits_memory    = var.project_limits.cpu # coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
+      limits_cpu       = var.project_limits.cpu              # coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
+      limits_memory    = var.project_limits.cpu              # coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
       requests_storage = var.project_limits.requests_storage # coalesce(each.value.limits.namespace.requests_storage, var.project_limits.requests_storage)
     }
   }
@@ -149,16 +149,6 @@ resource "rancher2_namespace" "services" {
 }
 
 
-data "rancher2_user" "members" {
-  for_each = { for o in distinct(flatten([
-    for index, team in var.teams : [
-      for member in team.members : member
-    ]
-  ])) : o => o }
-
-  name = each.key
-}
-
 data "rancher2_role_template" "project-member" {
   name = "Project Member"
 }
@@ -166,14 +156,14 @@ data "rancher2_role_template" "project-member" {
 resource "rancher2_project_role_template_binding" "members" {
   for_each = { for o in flatten([
     for index, team in var.teams : [
-      for member in team.members : {
-        member = member
+      for group in team.groups : {
+        group = group
         team   = index
       }
   ]]) : o.team => o }
 
-  name             = "${rancher2_project.teams[each.key].name}-${data.rancher2_user.members[each.value.member].username}-member"
-  project_id       = rancher2_project.teams[each.key].id
-  role_template_id = data.rancher2_role_template.project-member.id
-  user_id          = data.rancher2_user.members[each.value.member].id
+  name             = "${rancher2_project.teams[each.key].name}-${each.value.member}"
+  project_id         = rancher2_project.teams[each.key].id
+  role_template_id   = data.rancher2_role_template.project-member.id
+  group_principal_id = "azuread_group://${each.value.group}"
 }
