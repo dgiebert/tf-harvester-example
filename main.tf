@@ -98,14 +98,14 @@ resource "rancher2_project" "teams" {
   cluster_id = data.rancher2_cluster.harvester.id
   resource_quota {
     project_limit {
-      limits_cpu       = each.value.limits.project.cpu
-      limits_memory    = each.value.limits.project.memory
-      requests_storage = each.value.limits.project.requests_storage
+      limits_cpu       = coalesce(each.value.limits.project.cpu, var.project_limits.cpu)
+      limits_memory    = coalesce(each.value.limits.project.memory, var.project_limits.memory)
+      requests_storage = coalesce(each.value.limits.project.requests_storage, var.project_limits.requests_storage)
     }
     namespace_default_limit {
-      limits_cpu       = each.value.limits.namespace.cpu
-      limits_memory    = each.value.limits.namespace.memory
-      requests_storage = each.value.limits.namespace.requests_storage
+      limits_cpu       = coalesce(each.value.limits.namespace.cpu, var.project_limits.cpu)
+      limits_memory    = coalesce(each.value.limits.namespace.memory, var.project_limits.memory)
+      requests_storage = coalesce(each.value.limits.namespace.requests_storage, var.project_limits.requests_storage)
     }
   }
 }

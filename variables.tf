@@ -86,16 +86,16 @@ variable "settings" {
       "storage" : 100
     }
     # auto-disk-provision-paths = "/dev/sd*"
-    backup-target = {
-      "type" : "s3",
-      "endpoint" : "https://s3.endpoint.svc",
-      "accessKeyId" : "test-access-key-id",
-      "secretAccessKey" : "test-access-key",
-      "bucketName" : "test-bup",
-      "bucketRegion" : "us‑east‑2",
-      "cert" : "",
-      "virtualHostedStyle" : false
-    }
+    #backup-target = {
+    #  "type" : "s3",
+    #  "endpoint" : "https://s3.endpoint.svc",
+    #  "accessKeyId" : "test-access-key-id",
+    #  "secretAccessKey" : "test-access-key",
+    #  "bucketName" : "test-bup",
+    #  "bucketRegion" : "us‑east‑2",
+    #  "cert" : "",
+    #  "virtualHostedStyle" : false
+    #}
   }
 }
 
@@ -113,6 +113,14 @@ variable "managed_charts" {
         }
       }
     }
+  }
+}
+
+variable "project_limits" {
+  default = {
+    cpu              = "16000m"
+    memory           = "16000Mi"
+    requests_storage = "1000Gi"
   }
 }
 
