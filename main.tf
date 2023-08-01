@@ -59,7 +59,7 @@ resource "null_resource" "settings" {
   triggers = {
     kubeconfig = local.harvester_kubeconfig_path
     key        = each.key
-    value      = jsonencode(each.value)
+    value      = replace(jsonencode(each.value), "\"", "\\\"") 
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
