@@ -83,7 +83,7 @@ resource "null_resource" "managed_charts" {
         patch = patch
         chart = index
       }
-  ]]) : "${o.chart}-sha256(patch)" => o }
+  ]]) : "${o.chart}-${sha256(patch)}" => o }
 
   triggers = {
     kubeconfig = local.harvester_kubeconfig_path
