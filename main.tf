@@ -80,7 +80,7 @@ resource "null_resource" "managed_charts" {
   for_each = { for o in flatten([
     for index, patches in var.managed_charts : [
       for patch in patches : {
-        patch = patch
+        patch = replace(jsonencode(each.value.patch), "\"", "\\\"")
         chart = index
       }
   ]]) : "${o.chart}-${sha256(o.patch)}" => o }
@@ -88,7 +88,7 @@ resource "null_resource" "managed_charts" {
   triggers = {
     kubeconfig = local.harvester_kubeconfig_path
     key        = each.value.chart
-    value      = replace(jsonencode(each.value.patch), "\"", "\\\"")
+    value      = each.value.patch
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
