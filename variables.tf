@@ -1,7 +1,7 @@
 variable "harvester_kube_config" {
   description = "The location to check for the kubeconfig to connect to Harverster"
   type        = string
-  default     = ""
+  default     = "config/harvester.kubeconfig"
 }
 
 variable "harvester_cluster_name" {
@@ -73,6 +73,16 @@ variable "images" {
       name = "openSUSE-Leap-15.4.x86_64-NoCloud.qcow2"
       url  = "https://downloadcontent-us1.opensuse.org/repositories/Cloud:/Images:/Leap_15.4/images/openSUSE-Leap-15.4.x86_64-NoCloud.qcow2"
     }
+  }
+}
+
+variable "settings" {
+  description = "Settings to be applied to Harvester"
+  type = map()
+  default = {
+    overcommit-config = "{'cpu':200,'memory':100,'storage':100}"
+    # auto-disk-provision-paths = "/dev/sd*"
+    # backup-target = 
   }
 }
 

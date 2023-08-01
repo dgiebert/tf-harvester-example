@@ -49,41 +49,38 @@ resource "harvester_image" "os" {
   url          = each.value.url
 }
 
-resource "rancher2_cluster" "harvester" {
-  name = "harvey"
+data "rancher2_cluster" "harvester" {
+  name = var.harvester_cluster_name
 }
 
-# Ugly hack: https://github.com/hashicorp/terraform-provider-kubernetes/issues/723
-resource "null_resource" "cluster-registration-url" {
-  triggers = {
-    kubeconfig = local.harvester_kubeconfig_path
-    manifest_url = rancher2_cluster.harvester.cluster_registration_token[0].manifest_url
-  }
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<-EOT
-      kubectl patch --type merge settings cluster-registration-url -p '{"value": "${self.triggers.manifest_url}"}' --kubeconfig ${self.triggers.kubeconfig}
-    EOT
-  }
-  provisioner "local-exec" {
-    when    = destroy
-    interpreter = ["/bin/bash", "-c"]
-    command     = <<-EOT
-      kubectl patch --type merge settings cluster-registration-url -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
-    EOT
-  }
+## Ugly hack: https://github.com/hashicorp/terraform-provider-kubernetes/issues/723
+resource "null_resource" "settings" {
+  for_each = var.settings
+ triggers = {
+   kubeconfig = local.harvester_kubeconfig_path
+   manifest_url = rancher2_cluster.harvester.cluster_registration_token[0].manifest_url
+ }
+ provisioner "local-exec" {
+   interpreter = ["/bin/bash", "-c"]
+   command     = <<-EOT
+     kubectl patch --type merge settings cluster-registration-url -p '{"value": "${self.triggers.manifest_url}"}' --kubeconfig ${self.triggers.kubeconfig}
+   EOT
+ }
+ provisioner "local-exec" {
+   when    = destroy
+   interpreter = ["/bin/bash", "-c"]
+   command     = <<-EOT
+     kubectl patch --type merge settings cluster-registration-url -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
+   EOT
+ }
 }
 
-# Wait for the cluster to be active
-resource "rancher2_cluster_sync" "harvester" {
-  cluster_id =  rancher2_cluster.harvester.id
-}
 
 resource "rancher2_project" "teams" {
   for_each = var.teams
 
   name       = each.key
-  cluster_id = rancher2_cluster_sync.harvester.id
+  cluster_id = data.rancher2_cluster.harvester.id
   resource_quota {
     project_limit {
       limits_cpu       = each.value.limits.project.cpu
@@ -123,7 +120,7 @@ resource "rancher2_namespace" "team" {
 }
 
 resource "rancher2_namespace" "services" {
-  for_each = one([for index, team in var.teams : { for ns, limits in team.additional_namespace : "${index}-${ns}" => limits }])
+  for_each = coalesce(one([for index, team in var.teams : { for ns, limits in team.additional_namespace : "${index}-${ns}" => limits }]), {})
 
   name       = each.key
   project_id = rancher2_project.teams[element(split("-", each.key), 0)].id
