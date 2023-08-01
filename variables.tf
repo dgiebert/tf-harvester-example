@@ -80,9 +80,22 @@ variable "settings" {
   description = "Settings to be applied to Harvester"
   # type = map()
   default = {
-    overcommit-config = "{\"cpu\":200,\"memory\":100,\"storage\":100}"
+    overcommit-config = {
+      "cpu": 200,
+      "memory": 100,
+      "storage": 100
+    }
     # auto-disk-provision-paths = "/dev/sd*"
-    # backup-target = 
+    backup-target = {
+      "type" : "s3",
+      "endpoint" : "https://s3.endpoint.svc",
+      "accessKeyId" : "test-access-key-id",
+      "secretAccessKey" : "test-access-key",
+      "bucketName" : "test-bup",
+      "bucketRegion" : "us‑east‑2",
+      "cert" : "",
+      "virtualHostedStyle" : false
+    }
   }
 }
 
