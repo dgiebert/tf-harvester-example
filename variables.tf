@@ -110,6 +110,11 @@ variable "managed_charts" {
               externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
             }
           }
+          prometheus = {
+            prometheusSpec = {
+              externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
+            } 
+          }
         }
       }
     }
