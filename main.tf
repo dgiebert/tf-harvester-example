@@ -57,14 +57,14 @@ data "rancher2_cluster" "harvester" {
 resource "null_resource" "settings" {
   for_each = var.settings
   triggers = {
-    kubeconfig   = local.harvester_kubeconfig_path
-    key = each.key
-    value = each.value
+    kubeconfig = local.harvester_kubeconfig_path
+    key        = each.key
+    value      = jsonencode(each.value)
   }
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-     kubectl patch --type merge settings ${self.triggers.key} -p '{"value": ${jsonencode(self.triggers.value)}}' --kubeconfig ${self.triggers.kubeconfig}
+     kubectl patch --type merge settings ${self.triggers.key} -p '{"value": ${self.triggers.value}}' --kubeconfig ${self.triggers.kubeconfig}
    EOT
   }
   provisioner "local-exec" {
