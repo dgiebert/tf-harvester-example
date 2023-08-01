@@ -102,22 +102,30 @@ variable "settings" {
 variable "managed_charts" {
   description = "Settings to be applied to Harvester"
   default = {
-    rancher-monitoring = {
-      spec = {
-        values = {
-          alertmanager = {
-            alertmanagerSpec = {
-              externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
+    rancher-monitoring = [
+      {
+        spec = {
+          values = {
+            alertmanager = {
+              alertmanagerSpec = {
+                externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
+              }
             }
           }
-          prometheus = {
-            prometheusSpec = {
-              externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
-            } 
+        }
+      },
+      {
+        spec = {
+          values = {
+            prometheus = {
+              prometheusSpec = {
+                externalUrl = "https://10.7.101.195/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy/"
+              }
+            }
           }
         }
       }
-    }
+    ]
   }
 }
 
