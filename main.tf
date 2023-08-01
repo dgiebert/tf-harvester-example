@@ -56,23 +56,24 @@ data "rancher2_cluster" "harvester" {
 ## Ugly hack: https://github.com/hashicorp/terraform-provider-kubernetes/issues/723
 resource "null_resource" "settings" {
   for_each = var.settings
- triggers = {
-   kubeconfig = local.harvester_kubeconfig_path
-   manifest_url = rancher2_cluster.harvester.cluster_registration_token[0].manifest_url
- }
- provisioner "local-exec" {
-   interpreter = ["/bin/bash", "-c"]
-   command     = <<-EOT
-     kubectl patch --type merge settings cluster-registration-url -p '{"value": "${self.triggers.manifest_url}"}' --kubeconfig ${self.triggers.kubeconfig}
+  triggers = {
+    kubeconfig   = local.harvester_kubeconfig_path
+    key = each.key
+    value = each.value
+  }
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+     kubectl patch --type merge settings ${self.triggers.keys} -p '{"value": "${self.triggers.values}"}' --kubeconfig ${self.triggers.kubeconfig}
    EOT
- }
- provisioner "local-exec" {
-   when    = destroy
-   interpreter = ["/bin/bash", "-c"]
-   command     = <<-EOT
-     kubectl patch --type merge settings cluster-registration-url -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
+  }
+  provisioner "local-exec" {
+    when        = destroy
+    interpreter = ["/bin/bash", "-c"]
+    command     = <<-EOT
+     kubectl patch --type merge settings ${self.triggers.keys} -p '{"value": ""}' --kubeconfig ${self.triggers.kubeconfig}
    EOT
- }
+  }
 }
 
 

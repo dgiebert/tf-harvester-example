@@ -78,7 +78,7 @@ variable "images" {
 
 variable "settings" {
   description = "Settings to be applied to Harvester"
-  type = map()
+  # type = map()
   default = {
     overcommit-config = "{'cpu':200,'memory':100,'storage':100}"
     # auto-disk-provision-paths = "/dev/sd*"
