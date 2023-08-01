@@ -77,7 +77,7 @@ resource "null_resource" "settings" {
 }
 
 resource "null_resource" "managed_charts" {
-  for_each = var.settings
+  for_each = var.managed_charts
   triggers = {
     kubeconfig = local.harvester_kubeconfig_path
     key        = each.key
@@ -86,7 +86,7 @@ resource "null_resource" "managed_charts" {
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
     command     = <<-EOT
-     kubectl patch --type merge managedchart ${self.triggers.key} -p ${self.triggers.value} --kubeconfig ${self.triggers.kubeconfig}
+     kubectl patch -n fleet-local --type merge managedchart ${self.triggers.key} -p ${self.triggers.value} --kubeconfig ${self.triggers.kubeconfig}
    EOT
   }
 }
